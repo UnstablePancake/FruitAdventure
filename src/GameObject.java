@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public abstract class GameObject {
 
     private int width;
@@ -20,6 +22,10 @@ public abstract class GameObject {
         this.x = x;
         this.y = y;
     }
+
+    public abstract void draw(Graphics g);
+
+    public abstract void update();
 
     public void setWidth(int width) {
         this.width = width;

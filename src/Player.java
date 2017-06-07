@@ -4,22 +4,25 @@ public class Player extends GameObject {
 
     private boolean leftAccel;
     private boolean rightAccel;
+    private final double SPEED = .1;
     private final double GRAVITY = .94;
 
     public Player() {
         super();
     }
 
+    @Override
     public void draw(Graphics g) {
         g.setColor(Color.WHITE);
         g.drawRect((int)getX(), (int)getY(), getWidth(), getHeight());
     }
 
+    @Override
     public void update() {
         if (leftAccel)
-            xVel -= .2;
+            xVel -= SPEED;
         else if (rightAccel)
-            xVel += .2;
+            xVel += SPEED;
         else if (!leftAccel && !rightAccel)
             xVel *= GRAVITY;
 

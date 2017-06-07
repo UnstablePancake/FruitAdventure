@@ -7,11 +7,17 @@ public class Panel extends JPanel implements Runnable, KeyListener {
 
     private Thread thread;
     private Player p;
+    private Enemy[] enemies = new Enemy[10];
 
     public void init() {
         setFocusable(true);
         this.addKeyListener(this);
         p = new Player();
+
+        for (int i = 0; i < enemies.length; i++) {
+            enemies[i] = new Enemy();
+        }
+
         thread = new Thread(this);
         thread.start();
     }
@@ -21,6 +27,10 @@ public class Panel extends JPanel implements Runnable, KeyListener {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, Window.FRAME_WIDTH, Window.FRAME_HEIGHT);
 
+        for (Enemy e : enemies) {
+            e.draw(g);
+        }
+
         p.draw(g);
     }
 
@@ -28,6 +38,10 @@ public class Panel extends JPanel implements Runnable, KeyListener {
     public void run() {
         while (true) {
             p.update();
+
+            for (Enemy e : enemies) {
+                e.update();
+            }
 
             repaint();
 
