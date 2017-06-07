@@ -1,5 +1,3 @@
-import java.awt.*;
-
 public abstract class GameObject {
 
     private int width;

@@ -25,7 +25,7 @@ public class Player extends GameObject {
 
         x += xVel;
 
-        if(x <= 0){
+        if(x <= 0) {
             x = 0;
             xVel = 0;
         }
