@@ -18,8 +18,10 @@ public class Enemy extends GameObject implements Collidable {
 
     @Override
     public void update() {
-        if (y >= Window.FRAME_HEIGHT)
+        if (y >= Window.FRAME_HEIGHT) {
+            Panel.health--;
             reset();
+        }
 
         y += yVel;
     }
@@ -31,7 +33,7 @@ public class Enemy extends GameObject implements Collidable {
 
     // temporary values
     public void reset() {
-        setX((int)(Math.random() * Window.FRAME_WIDTH));
+        setX((int)(Math.random() * Window.FRAME_WIDTH - getWidth()));
         setY(-(int)(Math.random() * 250));
         setyVel(MIN_FALL_SPEED);
     }
