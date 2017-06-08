@@ -11,6 +11,7 @@ public class Panel extends JPanel implements Runnable, KeyListener {
     private Bullet[] bullets = new Bullet[10];
     private boolean fireStatus;
     public static int health = 99;
+    public static int score = 0;
 
     private int cooldown;
 
@@ -51,9 +52,14 @@ public class Panel extends JPanel implements Runnable, KeyListener {
                 b.draw(g);
         }
 
+        // draw player
         p.draw(g);
 
+        // draw health
         g.drawString(String.valueOf(health), 10, 20);
+
+        // draw score
+        g.drawString(String.valueOf(score), 10, 40);
     }
 
     @Override
@@ -83,6 +89,7 @@ public class Panel extends JPanel implements Runnable, KeyListener {
             for (Enemy e : enemies) {
                 for (Bullet b : bullets) {
                     if (collision(b, e)) {
+                        score++;
                         b.setActive(false);
                         e.reset();
                     }
