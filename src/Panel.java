@@ -88,7 +88,7 @@ public class Panel extends JPanel implements Runnable, KeyListener {
 
             for (Enemy e : enemies) {
                 for (Bullet b : bullets) {
-                    if (collision(b, e)) {
+                    if (b.isActive() && collision(b, e)) {
                         score++;
                         b.setActive(false);
                         e.reset();
