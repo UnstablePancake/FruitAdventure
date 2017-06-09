@@ -10,7 +10,7 @@ public class Bullet  extends GameObject implements Collidable {
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.YELLOW);
+        g.setColor(new Color(137, 14, 157));
         g.fillRect((int)x, (int)y, getWidth(), getHeight());
     }
 

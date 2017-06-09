@@ -13,7 +13,7 @@ public class Player extends GameObject {
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLUE);
         g.drawRect((int)getX(), (int)getY(), getWidth(), getHeight());
     }
 

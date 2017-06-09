@@ -7,13 +7,11 @@ public class Panel extends JPanel implements Runnable, KeyListener {
 
     private Thread thread;
     private Player p;
-    private Enemy[] enemies = new Enemy[10];
+    private Enemy[] enemies = new Enemy[5];
     private Bullet[] bullets = new Bullet[10];
     private boolean fireStatus;
-    public static int health = 99;
-    public static int score = 0;
-
     private int cooldown;
+    private static boolean inProgress = true;
 
     public void init() {
         setFocusable(true);
@@ -38,8 +36,11 @@ public class Panel extends JPanel implements Runnable, KeyListener {
 
     @Override
     public void paintComponent(Graphics g) {
+
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, Window.FRAME_WIDTH, Window.FRAME_HEIGHT);
+
+        HUD.drawHUD(g);
 
         // draw enemies
         for (Enemy e : enemies) {
@@ -52,19 +53,20 @@ public class Panel extends JPanel implements Runnable, KeyListener {
                 b.draw(g);
         }
 
+        if (HUD.health == 0) {
+            g.setColor(Color.WHITE);
+            g.drawString("GAMEOVER", (Window.FRAME_WIDTH / 2) - 25, Window.FRAME_HEIGHT / 2);
+            inProgress = false;
+        }
+
         // draw player
         p.draw(g);
 
-        // draw health
-        g.drawString(String.valueOf(health), 10, 20);
-
-        // draw score
-        g.drawString(String.valueOf(score), 10, 40);
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (inProgress) {
             // player
             p.update();
 
@@ -90,7 +92,7 @@ public class Panel extends JPanel implements Runnable, KeyListener {
             for (Enemy e : enemies) {
                 for (Bullet b : bullets) {
                     if (b.isActive() && collision(b, e)) {
-                        score++;
+                        HUD.score++;
                         b.setActive(false);
                         e.reset();
                     }
