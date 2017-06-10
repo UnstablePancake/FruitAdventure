@@ -19,7 +19,7 @@ public class Enemy extends GameObject implements Collidable {
     @Override
     public void update() {
         if (y >= Window.FRAME_HEIGHT) {
-            if (HUD.health > 0)
+            if (!Panel.aiActive && HUD.health > 0)
                 HUD.health -= 20;
             reset();
         }

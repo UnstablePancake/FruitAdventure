@@ -6,16 +6,22 @@ import java.awt.event.KeyListener;
 public class Panel extends JPanel implements Runnable, KeyListener {
 
     private Thread thread;
+    private AI ai;
     private Player p;
     private Enemy[] enemies = new Enemy[5];
     private Bullet[] bullets = new Bullet[10];
     private boolean fireStatus;
     private int cooldown;
-    private static boolean inProgress = true;
+    private boolean inProgress = true;
+    public static boolean aiActive = true;
+    public boolean gameEnd = true;
 
     public void init() {
         setFocusable(true);
         this.addKeyListener(this);
+
+        //create ai
+        ai = new AI(enemies);
 
         //create player
         p = new Player();
@@ -55,56 +61,80 @@ public class Panel extends JPanel implements Runnable, KeyListener {
 
         if (HUD.health == 0) {
             g.setColor(Color.WHITE);
-            g.drawString("GAMEOVER", (Window.FRAME_WIDTH / 2) - 25, Window.FRAME_HEIGHT / 2);
+            g.drawString("GAME OVER", (Window.FRAME_WIDTH / 2) - 25, Window.FRAME_HEIGHT / 2);
+            g.drawString("Press ENTER to play again", (Window.FRAME_WIDTH / 2) - 70, Window.FRAME_HEIGHT - 300);
             inProgress = false;
+            gameEnd = true;
         }
 
-        // draw player
-        p.draw(g);
+        if (aiActive) {
+            g.setColor(Color.WHITE);
+            g.drawString("Mr. Brunner's Space Adventure", (Window.FRAME_WIDTH / 2) - 75, Window.FRAME_HEIGHT / 2);
+            g.drawString("Press ENTER to play", (Window.FRAME_WIDTH / 2) - 50, Window.FRAME_HEIGHT - 300);
+        }
+
+        // draw player/ai
+        if (!aiActive)
+            p.draw(g);
+        else
+            ai.draw(g);
 
     }
 
     @Override
     public void run() {
-        while (inProgress) {
-            // player
-            p.update();
+        while (true) {
+            if (inProgress) {
+                // player
+                p.update();
 
-            // enemies
-            for (Enemy e : enemies) {
-                e.update();
-            }
+                // ai
+                ai.update();
 
-            // bullets
-            for (Bullet b : bullets) {
-                b.update();
-                if (b.getY() <= 0)
-                    b.setActive(false);
-
-                if (!b.isActive() && cooldown == 0 && fireStatus) {
-                    shoot(b);
-                    resetCooldown();
-                    break;
+                // enemies
+                for (Enemy e : enemies) {
+                    e.update();
                 }
-            }
 
-            // check for bullet and enemy collision
-            for (Enemy e : enemies) {
+                // bullets
                 for (Bullet b : bullets) {
-                    if (b.isActive() && collision(b, e)) {
-                        HUD.score++;
+                    b.update();
+
+                    if (b.getY() <= 0)
                         b.setActive(false);
-                        e.reset();
+
+                    if (!aiActive) {
+                        if (!b.isActive() && cooldown == 0 && fireStatus) {
+                            shoot(b);
+                            resetCooldown();
+                            break;
+                        }
+                    } else {
+                        if (!b.isActive() && cooldown == 0 && ai.getShoot()) {
+                            shoot(b);
+                            resetCooldown();
+                            break;
+                        }
                     }
                 }
+
+                // check for bullet and enemy collision
+                for (Enemy e : enemies) {
+                    for (Bullet b : bullets) {
+                        if (b.isActive() && collision(b, e)) {
+                            HUD.score++;
+                            b.setActive(false);
+                            e.reset();
+                        }
+                    }
+                }
+
+                // lower cooldown
+                if (cooldown > 0)
+                    cooldown--;
+
+                repaint();
             }
-
-            // lower cooldown
-            if (cooldown > 0)
-                cooldown--;
-
-            repaint();
-
             try {
                 thread.sleep(10);
             } catch (InterruptedException e) {
@@ -113,18 +143,23 @@ public class Panel extends JPanel implements Runnable, KeyListener {
         }
     }
 
-
-
+    // key events
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            p.setLeftAccel(true);
+        if (!aiActive) {
+            if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                p.setLeftAccel(true);
+            }
+            if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                p.setRightAccel(true);
+            }
+            if (e.getKeyCode() == KeyEvent.VK_UP) {
+                fireStatus = true;
+            }
         }
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            p.setRightAccel(true);
-        }
-        if (e.getKeyCode() == KeyEvent.VK_UP) {
-            fireStatus = true;
+        if (gameEnd && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            System.out.println("pressed");
+            startGame();
         }
     }
 
@@ -147,8 +182,13 @@ public class Panel extends JPanel implements Runnable, KeyListener {
     private void shoot(Bullet b) {
         b.setActive(true);
         b.setyVel(5);
-        b.setX(p.getX() + (p.getWidth() / 2));
-        b.setY(p.getY());
+        if (!aiActive) {
+            b.setX(p.getX() + (p.getWidth() / 2));
+            b.setY(p.getY());
+        } else {
+            b.setX(ai.getX() + (ai.getWidth() / 2));
+            b.setY(ai.getY());
+        }
     }
 
     private void resetCooldown() {
@@ -157,5 +197,25 @@ public class Panel extends JPanel implements Runnable, KeyListener {
 
     public boolean collision(Bullet b, Enemy e) {
         return b.getBounds().intersects(e.getBounds());
+    }
+
+    public void startGame() {
+        inProgress = true;
+        if (aiActive) {
+            aiActive = !aiActive;
+        }
+
+        for (Enemy e : enemies) {
+            e.reset();
+        }
+
+        for (Bullet b : bullets) {
+            b.reset();
+        }
+
+        HUD.score = 0;
+        HUD.health = 200;
+
+        gameEnd = false;
     }
 }

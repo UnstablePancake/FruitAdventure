@@ -32,4 +32,8 @@ public class Bullet  extends GameObject implements Collidable {
     public boolean isActive() {
         return active;
     }
+
+    public void reset() {
+        setActive(false);
+    }
 }

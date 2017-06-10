@@ -5,7 +5,7 @@ public class Player extends GameObject {
     private boolean leftAccel;
     private boolean rightAccel;
     private final double SPEED = .1;
-    private final double GRAVITY = .94;
+    private final double GRAVITY = .85;
 
     public Player() {
         super();
@@ -45,6 +45,14 @@ public class Player extends GameObject {
 
     public void setRightAccel(boolean rightAccel) {
         this.rightAccel = rightAccel;
+    }
+
+    public boolean getLeftAccel() {
+        return leftAccel;
+    }
+
+    public boolean getRightAccel() {
+        return rightAccel;
     }
 }
 
