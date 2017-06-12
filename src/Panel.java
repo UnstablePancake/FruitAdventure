@@ -158,7 +158,6 @@ public class Panel extends JPanel implements Runnable, KeyListener {
             }
         }
         if (gameEnd && e.getKeyCode() == KeyEvent.VK_ENTER) {
-            System.out.println("pressed");
             startGame();
         }
     }
