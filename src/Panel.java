@@ -71,6 +71,7 @@ public class Panel extends JPanel implements Runnable, KeyListener {
             g.setColor(Color.WHITE);
             g.drawString("Mr. Brunner's Space Adventure", (Window.FRAME_WIDTH / 2) - 75, Window.FRAME_HEIGHT / 2);
             g.drawString("Press ENTER to play", (Window.FRAME_WIDTH / 2) - 50, Window.FRAME_HEIGHT - 300);
+            g.drawString("LEFT and RIGHT to move. UP to shoot.", (Window.FRAME_WIDTH / 2 - 100), Window.FRAME_HEIGHT - 200);
         }
 
         // draw player/ai
