@@ -12,6 +12,7 @@ public class Panel extends JPanel implements Runnable, KeyListener {
     private Bullet[] bullets = new Bullet[10];
     private boolean fireStatus;
     private int cooldown;
+    public static int hiScore = 0;
     private boolean inProgress = true;
     public static boolean aiActive = true;
     public boolean gameEnd = true;
@@ -63,6 +64,13 @@ public class Panel extends JPanel implements Runnable, KeyListener {
             g.setColor(Color.WHITE);
             g.drawString("GAME OVER", (Window.FRAME_WIDTH / 2) - 25, Window.FRAME_HEIGHT / 2);
             g.drawString("Press ENTER to play again", (Window.FRAME_WIDTH / 2) - 70, Window.FRAME_HEIGHT - 300);
+
+            if (HUD.score > hiScore) {
+                hiScore = HUD.score;
+            }
+
+            g.drawString("High Score: " + hiScore, Window.FRAME_WIDTH / 2 - 30, Window.FRAME_HEIGHT - 200);
+
             inProgress = false;
             gameEnd = true;
         }
